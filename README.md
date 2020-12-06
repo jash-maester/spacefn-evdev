@@ -42,4 +42,4 @@ Then run the program:
 
 ## Customising
 
-The key map is in the function `key_map()`.
+The key map is in the function `key_map()`. Refer to `input-event-codes.h` file for keycodes.
