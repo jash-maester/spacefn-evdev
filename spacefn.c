@@ -17,22 +17,22 @@ unsigned int key_map(unsigned int code) {
         case KEY_BRIGHTNESSDOWN:    // my magical escape button
             exit(0);
 
-        case KEY_J:
+        case KEY_A:
             return KEY_LEFT;
-        case KEY_K:
+        case KEY_S:
             return KEY_DOWN;
-        case KEY_L:
+        case KEY_W:
             return KEY_UP;
-        case KEY_SEMICOLON:
+        case KEY_D:
             return KEY_RIGHT;
 
-        case KEY_M:
+        case KEY_Q:
             return KEY_HOME;
         case KEY_COMMA:
             return KEY_PAGEDOWN;
         case KEY_DOT:
             return KEY_PAGEUP;
-        case KEY_SLASH:
+        case KEY_E:
             return KEY_END;
 
         case KEY_B:
@@ -44,15 +44,15 @@ unsigned int key_map(unsigned int code) {
 // Blacklist keys for which I have a mapping, to try and train myself out of using them
 int blacklist(unsigned int code) {
     switch (code) {
-        case KEY_UP:
-        case KEY_DOWN:
-        case KEY_RIGHT:
-        case KEY_LEFT:
-        case KEY_HOME:
-        case KEY_END:
-        case KEY_PAGEUP:
-        case KEY_PAGEDOWN:
-            return 1;
+        //case KEY_UP:
+        //case KEY_DOWN:
+        //case KEY_RIGHT:
+        //case KEY_LEFT:
+        //case KEY_HOME:
+        //case KEY_END:
+        //case KEY_PAGEUP:
+        //case KEY_PAGEDOWN:
+        //    return 1;
     }
     return 0;
 }
@@ -98,6 +98,7 @@ static int buffer_append(unsigned int code) {
 #define V_RELEASE 0
 #define V_PRESS 1
 #define V_REPEAT 2
+
 static void send_key(unsigned int code, int value) {
     libevdev_uinput_write_event(odev, EV_KEY, code, value);
     libevdev_uinput_write_event(odev, EV_SYN, SYN_REPORT, 0);
@@ -115,9 +116,17 @@ static void send_repeat(unsigned int code) {
     send_key(code, 2);
 }
 
+// State functions {{{1
+enum {
+    IDLE,
+    DECIDE,
+    SHIFT,
+} state = IDLE;
+
 // input {{{2
 static int read_one_key(struct input_event *ev) {
     int err = libevdev_next_event(idev, LIBEVDEV_READ_FLAG_NORMAL | LIBEVDEV_READ_FLAG_BLOCKING, ev);
+
     if (err) {
         fprintf(stderr, "Failed: (%d) %s\n", -err, strerror(err));
         exit(1);
@@ -134,16 +143,10 @@ static int read_one_key(struct input_event *ev) {
     return 0;
 }
 
-// State functions {{{1
-enum {
-    IDLE,
-    DECIDE,
-    SHIFT,
-} state = IDLE;
 
 static void state_idle(void) {  // {{{2
     struct input_event ev;
-    for (;;) {
+    while(1) {
         while (read_one_key(&ev));
 
         if (ev.code == KEY_SPACE && ev.value == V_PRESS) {
@@ -213,7 +216,7 @@ static void state_decide(void) {    // {{{2
 static void state_shift(void) {
     n_buffer = 0;
     struct input_event ev;
-    for (;;) {
+    while(1) {
         while (read_one_key(&ev));
 
         if (ev.code == KEY_SPACE && ev.value == V_RELEASE) {
@@ -222,10 +225,12 @@ static void state_shift(void) {
             state = IDLE;
             return;
         }
+
         if (ev.code == KEY_SPACE)
             continue;
 
         unsigned int code = key_map(ev.code);
+
         if (code) {
             if (ev.value == V_PRESS)
                 buffer_append(code);
@@ -233,15 +238,15 @@ static void state_shift(void) {
                 buffer_remove(code);
 
             send_key(code, ev.value);
-        } else {
+        } 
+        else {
             send_key(ev.code, ev.value);
         }
-
     }
 }
 
 static void run_state_machine(void) {
-    for (;;) {
+    while(1) {
         printf("state %d\n", state);
         switch (state) {
             case IDLE:
