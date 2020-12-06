@@ -1,6 +1,8 @@
 spacefn-evdev
 =============
 
+This is my fork of the original Spacefn-evdev by `abrasive`
+
 This is a little tool to implement
 [the SpaceFn keyboard layout](https://geekhack.org/index.php?topic=51069.0)
 on Linux.
