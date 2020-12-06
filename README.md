@@ -29,11 +29,11 @@ Run `make`.
 Find your keyboard in `/dev/input/`.
 The easiest way is to look in `/dev/input/by-id`;
 for example, my laptop keyboard is
-`/dev/input/usb-Apple_Inc._Apple_Internal_Keyboard___Trackpad_XXXXXXXXXXXXXXXXXXXX-if01-event-kbd`.
+`/dev/input/by-id/usb-ITE_Tech._Inc._ITE_Device_xxxx_-event-kbd`.
 
 Then run the program:
 ```
-./spacefn /dev/input/usb-Apple_Inc._Apple_Internal_Keyboard___Trackpad_XXXXXXXXXXXXXXXXXXXX-if01-event-kbd
+./spacefn /dev/input/by-id/usb-ITE_Tech._Inc._ITE_Device_xxxx_-event-kbd
 ```
 
 ## Customising
