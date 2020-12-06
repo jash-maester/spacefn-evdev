@@ -6,10 +6,6 @@ This is a little tool to implement
 on Linux.
 
 I wanted to try SpaceFn on my laptop, obviously with a built-in keyboard.
-The only previous Linux implementation I could find
-[requires recompiling the Xorg input driver](http://www.ljosa.com/~ljosa/software/spacefn-xorg/),
-which is an impressive effort but is tricky to compile and means restarting my X server every time I want to make a change.
-
 
 ## Requirements
 
