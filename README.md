@@ -19,6 +19,23 @@ I wanted to try SpaceFn on my laptop, obviously with a built-in keyboard.
 
 You also need permission to read `/dev/input/eventXX`.
 
+```
+sudo chmod +0666 /dev/uinput
+```
+  - Create an udev rule
+  ```
+  sudo vim /etc/udev/rules.d/10-local.rules
+  ```
+  which contains:
+  ```
+  KERNEL=="uinput", GROUP="udev_group"
+  ```
+  - Also add your user to the uucp, input groups
+  ```
+  sudo usermod -a -G input $USER
+  sudo usermod -a -G uucp $USER
+  ```
+
 On my system all the requisite permissions are granted by making myself a member of the `input` group.
 You can also just run the program as root.
 
@@ -29,13 +46,13 @@ Run `make`.
 ## Running
 
 Find your keyboard in `/dev/input/`.
-The easiest way is to look in `/dev/input/by-id`;
-for example, my laptop keyboard is
+The easiest way is to look in `/dev/input/by-id`; Just do a `ls` in this location and identify your keyboard.
+for example, my laptop's keyboard is
 `/dev/input/by-id/usb-ITE_Tech._Inc._ITE_Device_xxxx_-event-kbd`.
 
 Then run the program:
 ```
-./spacefn /dev/input/by-id/usb-ITE_Tech._Inc._ITE_Device_xxxx_-event-kbd
+./spacefn /dev/input/by-id/usb-ITE_Tech._Inc._ITE_Device_xxxx_-event-kbd (replace this with your keyboard's path)
 ```
 
 ## Customising
